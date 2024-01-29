@@ -47,7 +47,7 @@ function App() {
       <Header/>
       {gameState === 'start' && <StartMenu onStartButtonClick={handleStartButtonClick} />}
       {gameState === 'characterSheet' && <CharacterSheet character={playerCharacter} onStartBattle={handleStartBattleClick} />}
-      {gameState === 'battle' && <Battle level={currentLevel} playerCharacter={playerCharacter} setLevel={handleUpdateLevel} onGameOver={handleGameOver} onNextBattleClick={handleNextBattleClick} />}
+      {gameState === 'battle' && <Battle level={currentLevel} playerCharacter={playerCharacter} updatePlayer={setPlayerCharacter}  setLevel={handleUpdateLevel} onGameOver={handleGameOver} onNextBattleClick={handleNextBattleClick} />}
       {gameState === 'results' && <Result onResultClick={handleResultClick} />}
       <Footer/>
     </div>

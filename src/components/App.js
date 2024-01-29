@@ -29,7 +29,15 @@ function App() {
     setGameState('battle');
   };
   const handleNextBattleClick = () => {
+    setPlayerCharacter((prevplayer) => {
+      const resetPlayer = {
+        ...prevplayer,
+        health: 100,
+      };
+      return resetPlayer;
+    });
     setGameState('characterSheet');
+
   };
   const handleResultClick = () => {
     setGameState('start');
@@ -37,6 +45,7 @@ function App() {
   const handleGameOver = () => {
     setGameState('results');
     setCurrentLevel(1);
+    setPlayerCharacter(initialCharacter)
   };
   const handleUpdateLevel = () => {
     setCurrentLevel((prevLevel) => prevLevel + 1);
@@ -46,7 +55,7 @@ function App() {
     <div className="App">
       <Header/>
       {gameState === 'start' && <StartMenu onStartButtonClick={handleStartButtonClick} />}
-      {gameState === 'characterSheet' && <CharacterSheet character={playerCharacter} onStartBattle={handleStartBattleClick} />}
+      {gameState === 'characterSheet' && <CharacterSheet character={playerCharacter} onUpdateStats={setPlayerCharacter} onStartBattle={handleStartBattleClick} />}
       {gameState === 'battle' && <Battle level={currentLevel} playerCharacter={playerCharacter} updatePlayer={setPlayerCharacter}  setLevel={handleUpdateLevel} onGameOver={handleGameOver} onNextBattleClick={handleNextBattleClick} />}
       {gameState === 'results' && <Result onResultClick={handleResultClick} />}
       <Footer/>

@@ -5,39 +5,50 @@ function Battle(props){
     const [opponentCharacter, setOpponentCharacter] = useState({
         name: 'Opponent',
         health: 100,
-        attack: 8, // Adjust the opponent's stats as needed
-        defense: 3,
-        combo: 0,
+        attack: 5+props.level+Math.floor(Math.random() * (props.level+1)), // Adjust the opponent's stats as needed
+        defense: props.level+Math.floor(Math.random() * (props.level+1)),
+        combo: 5*Math.floor(Math.random() * (props.level)),
         picture: '../assets/fighter'+ props.level+'.jpg',
       });
     const [moves, setMoves] = useState([]); // Array to store moves during the battle
+
     function handleNextScreen(){
-        if(props.level<3){
-            props.setLevel();
-            props.onNextBattleClick();
-        }else{
+        if(props.playerCharacter.health<=0){
             props.onGameOver();
+        }else{
+            if(opponentCharacter.health<=0){
+                if(props.level<10){
+                    props.setLevel();
+                    props.onNextBattleClick();
+                }else{                  
+                    props.onGameOver();
+                }
+            }
         }
-
     }
 
+    // Calculates attack
     function Attacking(maxAttack){
-        return (Math.floor(Math.random() * (maxAttack+11)));
+        return (Math.floor(Math.random() * (maxAttack+1)));
     }
-
+    // Calculates defense
     function Defending(maxDefense){
-        return (5+(Math.floor(Math.random() * (maxDefense+1))));
+        return (Math.floor(Math.random() * (maxDefense+1)));
     }
 
+    // FIGHT SIMULATION
+    // On button press, P1 attacks followed by P2 attacks
+    // Repeat with each button press until one player gets Knocked Out
     function simulateFight(){
-        
         if(opponentCharacter.health<=0){
             setMoves((prevMoves) => ["Your opponent is unconscious, you stop your attack", ...prevMoves]);
         }else{
             if(props.playerCharacter.health<=0){
                 setMoves((prevMoves) => ["You are unable to move your body", ...prevMoves]);
             }else{
-                // PLAYER ATTACKS
+                /////////////////////
+                // PLAYER ATTACKS //
+                ////////////////////
                 var totalDamageDealtToOpponent=0;
                 var playerNextHitChance = 100;
                 var followupAttack = Math.floor(Math.random() * 100)
@@ -46,56 +57,41 @@ function Battle(props){
                     var opponentDefense=Defending(opponentCharacter.defense);
                     var playerDamage=Math.max(playerAttack-opponentDefense, 0);
                     if(playerNextHitChance===100){ 
-                        // if 100, this is the first hit
+                        // if 100, this is the first attack
                         if((playerDamage>0)&&(opponentCharacter.health>0)){ 
-                            // damage greater than 0, damage was dealt
+                            // damage was dealt
                             const playerMove = `${props.playerCharacter.name} attacks and deals ${playerDamage} damage`;
-                            // Update opponent's health
-                            // setOpponentCharacter((prevOpponent) => {
-                            //     const updatedOpponent = {
-                            //       ...prevOpponent,
-                            //       health: Math.max(prevOpponent.health - playerDamage, 0),
-                            //     };
-                            //     return updatedOpponent;
-                            //   });
+                            // increase total damage to update damage just once after all hits are done
                             totalDamageDealtToOpponent=totalDamageDealtToOpponent+playerDamage;
-                            
                               setMoves((prevMoves) => {
                                 return [playerMove, ...prevMoves];
                               });
                         }else{ 
-                            // damage was 0, attack blocked
+                            // attack was blocked
                             const playerMove = `${props.playerCharacter.name} attacks but ${opponentCharacter.name} blocks the attack`;
                             setMoves((prevMoves) => {
                                 return [playerMove, ...prevMoves];
                               });
                         }
                     }else{
-                        // this is a combo
+                        // this is a followup attack / combo
                         if((playerDamage>0)&&(opponentCharacter.health>0)){ 
                             // damage greater than 0, damage was dealt
                             const playerMove = `${props.playerCharacter.name} follows up with another attack and deals ${playerDamage} damage`;
-                            // Update opponent's health
-                            // setOpponentCharacter((prevOpponent) => {
-                            //     const updatedOpponent = {
-                            //       ...prevOpponent,
-                            //       health: Math.max(prevOpponent.health - playerDamage, 0),
-                            //     };
-                            //     return updatedOpponent;
-                            //   });
                             totalDamageDealtToOpponent=totalDamageDealtToOpponent+playerDamage;
                             setMoves((prevMoves) => [playerMove, ...prevMoves]);
                         }else{ 
-                            // damage was 0, attack blocked
+                            // attack was blocked
                             const playerMove = `${props.playerCharacter.name} follows up with another attack but ${opponentCharacter.name} blocks the attack`;
                             setMoves((prevMoves) => [playerMove, ...prevMoves]);
                         }
-                    }                  
-                    // playerNextHitChance = nextHitChance/2+props.playerCharacter.combo;
-                    playerNextHitChance=0
+                    }
+                    // calculate next hit chance                  
+                    playerNextHitChance = playerNextHitChance/2+props.playerCharacter.combo;
                     followupAttack = Math.floor(Math.random() * 100)
                 }
                 var newOpponentHealth=opponentCharacter.health - totalDamageDealtToOpponent;
+                // Update opponent's health
                 setOpponentCharacter((prevOpponent) => {
                     const updatedOpponent = {
                       ...prevOpponent,
@@ -103,8 +99,9 @@ function Battle(props){
                     };
                     return updatedOpponent;
                   });
+///////////////////////////////////////////////////////////////////////////////////////////////////////////                  
                   if(newOpponentHealth<=0){
-                    setMoves((prevMoves) => ["Opponent faints", ...prevMoves]);
+                    setMoves((prevMoves) => [`${opponentCharacter.name} Knocked Out!`, ...prevMoves]);
                 }else{
                     var totalDamageDealtToPlayer=0;
                     var opponentNextHitChance = 100;
@@ -155,9 +152,9 @@ function Battle(props){
                                 setMoves((prevMoves) => [opponentMove, ...prevMoves]);
                             }
                         }                  
-                        // opponentNextHitChance = nextHitChance/2+props.playerCharacter.combo;
+                        opponentNextHitChance = opponentNextHitChance/2+props.playerCharacter.combo;
 
-                        opponentNextHitChance = 0;
+                        // opponentNextHitChance = 0;
                         followupAttack = Math.floor(Math.random() * 100)
                     }
                     var newPlayerHealth=props.playerCharacter.health - totalDamageDealtToPlayer;
@@ -168,6 +165,9 @@ function Battle(props){
                         };
                         return updatedPlayer;
                       });
+                      if(newPlayerHealth<=0){
+                        setMoves((prevMoves) => ["Player Knocked Out!", ...prevMoves]);
+                    }
                 }
                 
             }
@@ -188,6 +188,7 @@ function Battle(props){
         <div>
           <h2>Versus</h2>
           <button onClick={simulateFight}>Attack</button>
+          <button onClick={handleNextScreen}>Continue</button>
         {moves.map((move, index) => (
           <p key={index}>{move}</p>
         ))}
@@ -197,9 +198,7 @@ function Battle(props){
         </div>
       </div>
     </div>
-
-        <button onClick={handleNextScreen}>Continue</button>
-        </div>;
+    </div>;
   }
 
   export default Battle;

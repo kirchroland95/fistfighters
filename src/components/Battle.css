@@ -1,0 +1,28 @@
+/* Battle.css */
+.battlescreen{
+    display: flex;
+    justify-content: center;
+    align-items: top;
+}
+
+.start-attack{
+    background-color: #ff0049; /* Green background */
+    color: white;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 5px 1px;
+    font-weight: bold;
+}
+
+.next-battle{
+    background-color: #008CBA; /* Blue background */
+    color: white;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 5px 1px;
+    font-weight: bold;
+}

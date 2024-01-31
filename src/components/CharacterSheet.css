@@ -1,0 +1,38 @@
+/* CharacterSheet.css */
+
+.attack,
+.defense,
+.combo,
+.next-fight {
+  background-color: transparent;
+  color: white;
+  padding: 15px 15px; 
+  border: 2px solid; 
+  border-radius: 20px;
+  cursor: pointer;
+  margin: 10px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+  
+  .attack {
+    border-color: #D04848;
+    background-color: #D04848;
+  }
+  
+  .defense {
+    border-color: #6895D2;
+    background-color: #6895D2;
+  }
+  
+  .combo {
+    border-color: #F3B95F;
+    background-color: #F3B95F;
+  }
+
+  .next-fight{
+    border-color: #ff0049;
+    background-color: #ff0049;
+    font-size: 30px; 
+  }

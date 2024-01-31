@@ -1,0 +1,21 @@
+.start-menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 75vh;
+  }
+  
+  .start-button {
+    display: inline-block;
+    padding: 10px 20px; 
+    font-size: 24px; 
+    background-color: #ff0049; 
+    color: #fff; 
+    cursor: pointer;
+    border-radius: 5px; 
+  }
+  
+  .start-button:hover {
+    font-size: 30px; 
+  }
+  

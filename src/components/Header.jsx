@@ -2,7 +2,7 @@ import React from 'react';
 
 function Header(){
     return <header>
-        <h1>FistFighters</h1>
+        <img src="../assets/fflogo.png" alt="FistFighters Logo"></img>
         </header>;
   }
 

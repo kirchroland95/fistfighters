@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import Character from './Character';
-
+import './CharacterSheet.css'
 function CharacterSheet({character, onStartBattle, onUpdateStats}){
-    const [attributePoints, setAttributePoints] = useState(3); // Set the initial number of attribute points
+    const [attributePoints, setAttributePoints] = useState(2); // Set the initial number of attribute points
 
     function handleIncreaseStat(stat) {
         if (attributePoints > 0) {
@@ -28,15 +28,15 @@ function CharacterSheet({character, onStartBattle, onUpdateStats}){
       };
 
     return <div>
-        <h1>CharacterSheet</h1>
+        <h1>Training Grounds</h1>
         <Character character={character}/>
         <div>
         <h2>Attribute Points: {attributePoints}</h2>
-        <button onClick={() => handleIncreaseStat('attack')}>Increase Attack</button>
-        <button onClick={() => handleIncreaseStat('defense')}>Increase Defense</button>
-        <button onClick={() => handleIncreaseStat('combo')}>Increase Combo</button>
+        <button class="attack" onClick={() => handleIncreaseStat('attack')}>Increase Attack</button>
+        <button class="defense" onClick={() => handleIncreaseStat('defense')}>Increase Defense</button>
+        <button class="combo" onClick={() => handleIncreaseStat('combo')}>Increase Combo</button>
       </div>
-        <button onClick={onStartBattle}>Begin Battle</button>
+        <button class="next-fight" onClick={onStartBattle}>FIGHT!</button>
         </div>;
   }
 

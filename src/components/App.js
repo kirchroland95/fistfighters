@@ -12,11 +12,11 @@ function App() {
   const [currentLevel, setCurrentLevel] = useState(1);
   // Define a character object with attributes
   const initialCharacter = {
-    name: 'Player',
+    name: 'Falkon',
     health: 100,
-    attack: 10,
+    attack: 5,
     defense: 5,
-    combo: 0,
+    combo: 5,
     // Add the path to the character image
     picture: '../assets/player.jpg',
   };
@@ -32,7 +32,7 @@ function App() {
     setPlayerCharacter((prevplayer) => {
       const resetPlayer = {
         ...prevplayer,
-        health: 100,
+        health: Math.min(prevplayer.health+50, 100) ,
       };
       return resetPlayer;
     });
@@ -41,10 +41,10 @@ function App() {
   };
   const handleResultClick = () => {
     setGameState('start');
+    setCurrentLevel(1);
   };
   const handleGameOver = () => {
     setGameState('results');
-    setCurrentLevel(1);
     setPlayerCharacter(initialCharacter)
   };
   const handleUpdateLevel = () => {
@@ -57,7 +57,7 @@ function App() {
       {gameState === 'start' && <StartMenu onStartButtonClick={handleStartButtonClick} />}
       {gameState === 'characterSheet' && <CharacterSheet character={playerCharacter} onUpdateStats={setPlayerCharacter} onStartBattle={handleStartBattleClick} />}
       {gameState === 'battle' && <Battle level={currentLevel} playerCharacter={playerCharacter} updatePlayer={setPlayerCharacter}  setLevel={handleUpdateLevel} onGameOver={handleGameOver} onNextBattleClick={handleNextBattleClick} />}
-      {gameState === 'results' && <Result onResultClick={handleResultClick} />}
+      {gameState === 'results' && <Result level={currentLevel} onResultClick={handleResultClick} />}
       <Footer/>
     </div>
   );

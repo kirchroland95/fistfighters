@@ -1,13 +1,15 @@
 import React,{useState} from 'react';
 import Character from './Character';
+import generateSuperName from "superheroes";
+import './Battle.css'
 
 function Battle(props){
     const [opponentCharacter, setOpponentCharacter] = useState({
-        name: 'Opponent',
+        name: generateSuperName.random(),
         health: 100,
-        attack: 5+props.level+Math.floor(Math.random() * (props.level+1)), // Adjust the opponent's stats as needed
-        defense: props.level+Math.floor(Math.random() * (props.level+1)),
-        combo: 5*Math.floor(Math.random() * (props.level)),
+        attack: (Math.floor(Math.random() *4))+props.level, // Adjust the opponent's stats as needed
+        defense: (Math.floor(Math.random() *4))+props.level,
+        combo: props.level,
         picture: '../assets/fighter'+ props.level+'.jpg',
       });
     const [moves, setMoves] = useState([]); // Array to store moves during the battle
@@ -20,7 +22,8 @@ function Battle(props){
                 if(props.level<10){
                     props.setLevel();
                     props.onNextBattleClick();
-                }else{                  
+                }else{            
+                    props.setLevel();      
                     props.onGameOver();
                 }
             }
@@ -178,22 +181,24 @@ function Battle(props){
 
 
     return <div>
-        <h1>Battle Screen Match {props.level}</h1>
+        <h1>Match {props.level}</h1>
         <div>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'top' }}>
-        <div>
+      <div class="battlescreen">
+        <div  style={{ marginRight: '10px' }}>
         <Character character={props.playerCharacter}/>
         </div>
         <div>
           <h2>Versus</h2>
-          <button onClick={simulateFight}>Attack</button>
-          <button onClick={handleNextScreen}>Continue</button>
+          <button class="start-attack" onClick={simulateFight}>Attack</button>
+          {props.playerCharacter.health <= 0 || opponentCharacter.health <= 0 ? (
+          <button class="next-battle" onClick={handleNextScreen}>Continue</button>
+        ) : null}
         {moves.map((move, index) => (
           <p key={index}>{move}</p>
         ))}
         </div>
-        <div>
+        <div style={{ marginLeft: '10px' }}>
         <Character character={opponentCharacter}/>
         </div>
       </div>

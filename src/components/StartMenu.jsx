@@ -1,11 +1,15 @@
 import React from 'react';
+import './StartMenu.css';
 
 function StartMenu({onStartButtonClick}){
 
-    return <div>
-        <h1>FistFighters</h1>
-        <button onClick={onStartButtonClick}>Start</button>
-        </div>;
-  }
+    return (
+        <div className="start-menu">
+          <div className="start-button" onClick={onStartButtonClick}>
+            -START-
+          </div>
+        </div>
+      );
+    }
 
   export default StartMenu;

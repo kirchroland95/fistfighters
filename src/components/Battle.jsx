@@ -43,11 +43,19 @@ function Battle(props){
     // On button press, P1 attacks followed by P2 attacks
     // Repeat with each button press until one player gets Knocked Out
     function simulateFight(){
+        var timer = 0;
+        var increase=2000
         if(opponentCharacter.health<=0){
+            setTimeout(() => {
             setMoves((prevMoves) => ["Your opponent is unconscious, you stop your attack", ...prevMoves]);
+        },timer);
+        timer=timer+increase;
         }else{
             if(props.playerCharacter.health<=0){
+                setTimeout(() => {
                 setMoves((prevMoves) => ["You are unable to move your body", ...prevMoves]);
+            },timer);
+            timer=timer+increase;
             }else{
                 /////////////////////
                 // PLAYER ATTACKS //
@@ -66,15 +74,23 @@ function Battle(props){
                             const playerMove = `${props.playerCharacter.name} attacks and deals ${playerDamage} damage`;
                             // increase total damage to update damage just once after all hits are done
                             totalDamageDealtToOpponent=totalDamageDealtToOpponent+playerDamage;
-                              setMoves((prevMoves) => {
-                                return [playerMove, ...prevMoves];
-                              });
+
+                              setTimeout(() => {
+                                setMoves((prevMoves) => {
+                                    return [playerMove, ...prevMoves];
+                                  });
+                              },timer);
+                              timer=timer+increase;
                         }else{ 
                             // attack was blocked
                             const playerMove = `${props.playerCharacter.name} attacks but ${opponentCharacter.name} blocks the attack`;
-                            setMoves((prevMoves) => {
-                                return [playerMove, ...prevMoves];
-                              });
+
+                              setTimeout(() => {
+                                setMoves((prevMoves) => {
+                                    return [playerMove, ...prevMoves];
+                                  });
+                              },timer);
+                              timer=timer+increase;
                         }
                     }else{
                         // this is a followup attack / combo
@@ -82,19 +98,31 @@ function Battle(props){
                             // damage greater than 0, damage was dealt
                             const playerMove = `${props.playerCharacter.name} follows up with another attack and deals ${playerDamage} damage`;
                             totalDamageDealtToOpponent=totalDamageDealtToOpponent+playerDamage;
-                            setMoves((prevMoves) => [playerMove, ...prevMoves]);
+                            
+                            setTimeout(() => {
+                                setMoves((prevMoves) => [playerMove, ...prevMoves]);
+                            },timer);
+                            timer=timer+increase;
                         }else{ 
                             // attack was blocked
                             const playerMove = `${props.playerCharacter.name} follows up with another attack but ${opponentCharacter.name} blocks the attack`;
-                            setMoves((prevMoves) => [playerMove, ...prevMoves]);
+                            
+                            setTimeout(() => {
+                                setMoves((prevMoves) => [playerMove, ...prevMoves]);
+                            },timer);
+                            timer=timer+increase;
                         }
                     }
                     // calculate next hit chance                  
                     playerNextHitChance = playerNextHitChance/2+props.playerCharacter.combo;
                     followupAttack = Math.floor(Math.random() * 100)
                 }
+
+
+
                 var newOpponentHealth=opponentCharacter.health - totalDamageDealtToOpponent;
                 // Update opponent's health
+                setTimeout(() => {
                 setOpponentCharacter((prevOpponent) => {
                     const updatedOpponent = {
                       ...prevOpponent,
@@ -102,9 +130,12 @@ function Battle(props){
                     };
                     return updatedOpponent;
                   });
+                },timer-increase);
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////                  
                   if(newOpponentHealth<=0){
-                    setMoves((prevMoves) => [`${opponentCharacter.name} Knocked Out!`, ...prevMoves]);
+                    setTimeout(() => {
+                        setMoves((prevMoves) => [`${opponentCharacter.name} Knocked Out!`, ...prevMoves]);
+                    },timer);
                 }else{
                     var totalDamageDealtToPlayer=0;
                     var opponentNextHitChance = 100;
@@ -128,11 +159,17 @@ function Battle(props){
                                 //     return updatedPlayer;
                                 //   });
                                 totalDamageDealtToPlayer=totalDamageDealtToPlayer+opponentDamage;
+                                setTimeout(() => {
                                 setMoves((prevMoves) => [opponentMove, ...prevMoves]);
+                            },timer);
+                            timer=timer+increase;
                             }else{ 
                                 // damage was 0, attack blocked
                                 const opponentMove = `${opponentCharacter.name} attacks but ${props.playerCharacter.name} blocks the attack`;
+                                setTimeout(() => {
                                 setMoves((prevMoves) => [opponentMove, ...prevMoves]);
+                            },timer);
+                            timer=timer+increase;
                             }
                         }else{
                             // this is a combo
@@ -148,11 +185,17 @@ function Battle(props){
                                 //     return updatedPlayer;
                                 //   });
                                 totalDamageDealtToPlayer=totalDamageDealtToPlayer+opponentDamage;
+                                setTimeout(() => {
                                 setMoves((prevMoves) => [opponentMove, ...prevMoves]);
+                            },timer);
+                            timer=timer+increase;
                             }else{ 
                                 // damage was 0, attack blocked
                                 const opponentMove = `${opponentCharacter.name} follows up with another attack but ${props.playerCharacter.name} blocks the attack`;
+                                setTimeout(() => {
                                 setMoves((prevMoves) => [opponentMove, ...prevMoves]);
+                            },timer);
+                            timer=timer+increase;
                             }
                         }                  
                         opponentNextHitChance = opponentNextHitChance/2+props.playerCharacter.combo;
@@ -161,6 +204,7 @@ function Battle(props){
                         followupAttack = Math.floor(Math.random() * 100)
                     }
                     var newPlayerHealth=props.playerCharacter.health - totalDamageDealtToPlayer;
+                    setTimeout(() => {
                     props.updatePlayer((prevplayer) => {
                         const updatedPlayer = {
                           ...prevplayer,
@@ -168,8 +212,12 @@ function Battle(props){
                         };
                         return updatedPlayer;
                       });
+                    },timer-increase);
                       if(newPlayerHealth<=0){
+                        setTimeout(() => {
                         setMoves((prevMoves) => ["Player Knocked Out!", ...prevMoves]);
+                    },timer);
+                    timer=timer+increase;
                     }
                 }
                 

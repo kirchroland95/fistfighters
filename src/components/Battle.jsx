@@ -46,7 +46,7 @@ function Battle(props) {
     if(!attackInProgress){
         setAttackInProgress(true);
     var timer = 0;
-    var increase = 2000;
+    var increase = 1000;
     if (opponentCharacter.health <= 0) {
       setTimeout(() => {
         setMoves((prevMoves) => [

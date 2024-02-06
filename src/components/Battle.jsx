@@ -32,11 +32,35 @@ function Battle(props) {
 
   // Calculates attack
   function Attacking(maxAttack) {
-    return Math.floor(Math.random() * (maxAttack + 1));
+    var damage=Math.floor(Math.random() * (maxAttack + 1));
+    if(damage===maxAttack){
+      damage=2*maxAttack;
+    }
+    return damage;
   }
   // Calculates defense
   function Defending(maxDefense) {
     return Math.floor(Math.random() * (maxDefense + 1));
+  }
+  // Damage Text
+  function DamageText(attacker, maxDamage, damage){
+    if(damage<=maxDamage/2){
+      const playerMove = `Dealing ${damage} damage, ${attacker} executes a quick jab`;
+      return playerMove;
+    }else{
+      if((damage>maxDamage/2)&&(damage<=maxDamage)){
+        const playerMove = `A forceful strike from ${attacker} results in ${damage} damage`;
+        return playerMove;
+      }else{
+        const playerMove = `${attacker} executes a precise strike, resulting in a critical hit of ${damage} damage`;
+        return playerMove;
+      }
+    }
+  }
+  // Block Text
+  function BlockText(attacker, defender){
+    const blockedMove= `${defender} skillfully blocks ${attacker}'s incoming strike`
+    return blockedMove;
   }
 
   // FIGHT SIMULATION
@@ -81,7 +105,8 @@ function Battle(props) {
             // if 100, this is the first attack
             if (playerDamage > 0 && opponentCharacter.health > 0) {
               // damage was dealt
-              const playerMove = `${props.playerCharacter.name} attacks and deals ${playerDamage} damage`;
+              // const playerMove = `${props.playerCharacter.name} attacks and deals ${playerDamage} damage`;
+              const playerMove = DamageText(props.playerCharacter.name,props.playerCharacter.attack,playerDamage);
               // increase total damage to update damage just once after all hits are done
               totalDamageDealtToOpponent =
                 totalDamageDealtToOpponent + playerDamage;
@@ -94,7 +119,8 @@ function Battle(props) {
               timer = timer + increase;
             } else {
               // attack was blocked
-              const playerMove = `${props.playerCharacter.name} attacks but ${opponentCharacter.name} blocks the attack`;
+              //const playerMove = `${props.playerCharacter.name} attacks but ${opponentCharacter.name} blocks the attack`;
+              const playerMove = BlockText(props.playerCharacter.name,opponentCharacter.name);
 
               setTimeout(() => {
                 setMoves((prevMoves) => {
@@ -107,7 +133,8 @@ function Battle(props) {
             // this is a followup attack / combo
             if (playerDamage > 0 && opponentCharacter.health > 0) {
               // damage greater than 0, damage was dealt
-              const playerMove = `${props.playerCharacter.name} follows up with another attack and deals ${playerDamage} damage`;
+              // const playerMove = `${props.playerCharacter.name} follows up with another attack and deals ${playerDamage} damage`;
+              const playerMove = DamageText(props.playerCharacter.name,props.playerCharacter.attack,playerDamage);
               totalDamageDealtToOpponent =
                 totalDamageDealtToOpponent + playerDamage;
 
@@ -117,8 +144,8 @@ function Battle(props) {
               timer = timer + increase;
             } else {
               // attack was blocked
-              const playerMove = `${props.playerCharacter.name} follows up with another attack but ${opponentCharacter.name} blocks the attack`;
-
+              //const playerMove = `${props.playerCharacter.name} follows up with another attack but ${opponentCharacter.name} blocks the attack`;
+              const playerMove = BlockText(props.playerCharacter.name,opponentCharacter.name);
               setTimeout(() => {
                 setMoves((prevMoves) => [playerMove, ...prevMoves]);
               }, timer);
@@ -153,6 +180,7 @@ function Battle(props) {
             setAttackInProgress(false);
           }, timer);
         } else {
+          var comboCounter=0;
           var totalDamageDealtToPlayer = 0;
           var opponentNextHitChance = 100;
           followupAttack = Math.floor(Math.random() * 100);
@@ -165,7 +193,7 @@ function Battle(props) {
               // if 100, this is the first hit
               if (opponentDamage > 0 && props.playerCharacter.health > 0) {
                 // damage greater than 0, damage was dealt
-                const opponentMove = `${opponentCharacter.name} attacks and deals ${opponentDamage} damage`;
+                const opponentMove =DamageText(opponentCharacter.name,opponentCharacter.attack,opponentDamage);
                 totalDamageDealtToPlayer =
                   totalDamageDealtToPlayer + opponentDamage;
                 setTimeout(() => {
@@ -174,7 +202,8 @@ function Battle(props) {
                 timer = timer + increase;
               } else {
                 // damage was 0, attack blocked
-                const opponentMove = `${opponentCharacter.name} attacks but ${props.playerCharacter.name} blocks the attack`;
+                //const opponentMove = `${opponentCharacter.name} attacks but ${props.playerCharacter.name} blocks the attack`;
+                const opponentMove = BlockText(opponentCharacter.name,props.playerCharacter.name);
                 setTimeout(() => {
                   setMoves((prevMoves) => [opponentMove, ...prevMoves]);
                 }, timer);
@@ -184,7 +213,8 @@ function Battle(props) {
               // this is a combo
               if (opponentDamage > 0 && props.playerCharacter.health > 0) {
                 // damage greater than 0, damage was dealt
-                const opponentMove = `${opponentCharacter.name} follows up with another attack and deals ${opponentDamage} damage`;
+                // const opponentMove = `${opponentCharacter.name} follows up with another attack and deals ${opponentDamage} damage`;
+                const opponentMove =DamageText(opponentCharacter.name,opponentCharacter.attack,opponentDamage);
                 totalDamageDealtToPlayer =
                   totalDamageDealtToPlayer + opponentDamage;
                 setTimeout(() => {
@@ -193,7 +223,8 @@ function Battle(props) {
                 timer = timer + increase;
               } else {
                 // damage was 0, attack blocked
-                const opponentMove = `${opponentCharacter.name} follows up with another attack but ${props.playerCharacter.name} blocks the attack`;
+                //const opponentMove = `${opponentCharacter.name} follows up with another attack but ${props.playerCharacter.name} blocks the attack`;
+                const opponentMove = BlockText(opponentCharacter.name,props.playerCharacter.name);
                 setTimeout(() => {
                   setMoves((prevMoves) => [opponentMove, ...prevMoves]);
                 }, timer);

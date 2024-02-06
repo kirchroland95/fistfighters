@@ -21,7 +21,7 @@ function Result({ onResultClick, level }) {
           }}
           onClick={onResultClick}
         >
-          Start again
+          Start Again
         </button>
       </div>
     );

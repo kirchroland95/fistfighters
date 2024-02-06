@@ -18,7 +18,7 @@ function App() {
     defense: 5,
     combo: 5,
     // Add the path to the character image
-    picture: '../assets/player.jpg',
+    picture: './assets/player.jpg',
   };
   const [playerCharacter, setPlayerCharacter] = useState(initialCharacter);
 

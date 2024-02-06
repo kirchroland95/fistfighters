@@ -10,7 +10,7 @@ function Battle(props) {
     attack: Math.floor(Math.random() * 4) + props.level, // Adjust the opponent's stats as needed
     defense: Math.floor(Math.random() * 4) + props.level,
     combo: 2*props.level,
-    picture: "../assets/fighter" + props.level + ".jpg",
+    picture: "./assets/fighter" + props.level + ".jpg",
   });
   const [moves, setMoves] = useState([]); // Array to store moves during the battle
   const [attackInProgress, setAttackInProgress] = useState(false); // Array to store moves during the battle

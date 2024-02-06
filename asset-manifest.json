@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/fistfighters/static/css/main.b253af94.css",
+    "main.js": "/fistfighters/static/js/main.4c405b17.js",
+    "index.html": "/fistfighters/index.html",
+    "main.b253af94.css.map": "/fistfighters/static/css/main.b253af94.css.map",
+    "main.4c405b17.js.map": "/fistfighters/static/js/main.4c405b17.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b253af94.css",
+    "static/js/main.4c405b17.js"
+  ]
+}

@@ -9,7 +9,7 @@ function Battle(props) {
     health: 100,
     attack: Math.floor(Math.random() * 4) + props.level, // Adjust the opponent's stats as needed
     defense: Math.floor(Math.random() * 4) + props.level,
-    combo: props.level,
+    combo: 2*props.level,
     picture: "../assets/fighter" + props.level + ".jpg",
   });
   const [moves, setMoves] = useState([]); // Array to store moves during the battle
@@ -31,12 +31,12 @@ function Battle(props) {
   }
 
   // Calculates attack
-  function Attacking(maxAttack) {
+  function Attacking(maxAttack, combo) {
     var damage=Math.floor(Math.random() * (maxAttack + 1));
     if(damage===maxAttack){
       damage=2*maxAttack;
     }
-    return damage;
+    return damage+combo;
   }
   // Calculates defense
   function Defending(maxDefense) {
@@ -94,23 +94,23 @@ function Battle(props) {
         /////////////////////
         // PLAYER ATTACKS //
         ////////////////////
+        var comboCounterPlayer=0;
         var totalDamageDealtToOpponent = 0;
         var playerNextHitChance = 100;
         var followupAttack = Math.floor(Math.random() * 100);
         while (playerNextHitChance > followupAttack) {
-          var playerAttack = Attacking(props.playerCharacter.attack);
+          var playerAttack = Attacking(props.playerCharacter.attack, comboCounterPlayer);
           var opponentDefense = Defending(opponentCharacter.defense);
           var playerDamage = Math.max(playerAttack - opponentDefense, 0);
           if (playerNextHitChance === 100) {
             // if 100, this is the first attack
+            comboCounterPlayer=comboCounterPlayer+1;
             if (playerDamage > 0 && opponentCharacter.health > 0) {
               // damage was dealt
-              // const playerMove = `${props.playerCharacter.name} attacks and deals ${playerDamage} damage`;
               const playerMove = DamageText(props.playerCharacter.name,props.playerCharacter.attack,playerDamage);
               // increase total damage to update damage just once after all hits are done
               totalDamageDealtToOpponent =
                 totalDamageDealtToOpponent + playerDamage;
-
               setTimeout(() => {
                 setMoves((prevMoves) => {
                   return [playerMove, ...prevMoves];
@@ -119,9 +119,7 @@ function Battle(props) {
               timer = timer + increase;
             } else {
               // attack was blocked
-              //const playerMove = `${props.playerCharacter.name} attacks but ${opponentCharacter.name} blocks the attack`;
               const playerMove = BlockText(props.playerCharacter.name,opponentCharacter.name);
-
               setTimeout(() => {
                 setMoves((prevMoves) => {
                   return [playerMove, ...prevMoves];
@@ -131,20 +129,18 @@ function Battle(props) {
             }
           } else {
             // this is a followup attack / combo
+            comboCounterPlayer=comboCounterPlayer+1;
             if (playerDamage > 0 && opponentCharacter.health > 0) {
               // damage greater than 0, damage was dealt
-              // const playerMove = `${props.playerCharacter.name} follows up with another attack and deals ${playerDamage} damage`;
               const playerMove = DamageText(props.playerCharacter.name,props.playerCharacter.attack,playerDamage);
               totalDamageDealtToOpponent =
                 totalDamageDealtToOpponent + playerDamage;
-
               setTimeout(() => {
                 setMoves((prevMoves) => [playerMove, ...prevMoves]);
               }, timer);
               timer = timer + increase;
             } else {
               // attack was blocked
-              //const playerMove = `${props.playerCharacter.name} follows up with another attack but ${opponentCharacter.name} blocks the attack`;
               const playerMove = BlockText(props.playerCharacter.name,opponentCharacter.name);
               setTimeout(() => {
                 setMoves((prevMoves) => [playerMove, ...prevMoves]);
@@ -174,23 +170,24 @@ function Battle(props) {
         if (newOpponentHealth <= 0) {
           setTimeout(() => {
             setMoves((prevMoves) => [
-              `${opponentCharacter.name} Knocked Out!`,
+               `${props.playerCharacter.name} Wins!`, `${opponentCharacter.name} Knocked Out!`,
               ...prevMoves,
             ]);
             setAttackInProgress(false);
           }, timer);
         } else {
-          var comboCounter=0;
+          var comboCounterOpponent=0;
           var totalDamageDealtToPlayer = 0;
           var opponentNextHitChance = 100;
           followupAttack = Math.floor(Math.random() * 100);
           // OPPONENT ATTACKS
           while (opponentNextHitChance > followupAttack) {
-            var opponentAttack = Attacking(opponentCharacter.attack);
+            var opponentAttack = Attacking(opponentCharacter.attack,comboCounterOpponent);
             var playerDefense = Defending(props.playerCharacter.defense);
             var opponentDamage = Math.max(opponentAttack - playerDefense, 0);
             if (opponentNextHitChance === 100) {
               // if 100, this is the first hit
+              // comboCounterOpponent=comboCounterOpponent+1;
               if (opponentDamage > 0 && props.playerCharacter.health > 0) {
                 // damage greater than 0, damage was dealt
                 const opponentMove =DamageText(opponentCharacter.name,opponentCharacter.attack,opponentDamage);
@@ -202,7 +199,6 @@ function Battle(props) {
                 timer = timer + increase;
               } else {
                 // damage was 0, attack blocked
-                //const opponentMove = `${opponentCharacter.name} attacks but ${props.playerCharacter.name} blocks the attack`;
                 const opponentMove = BlockText(opponentCharacter.name,props.playerCharacter.name);
                 setTimeout(() => {
                   setMoves((prevMoves) => [opponentMove, ...prevMoves]);
@@ -211,9 +207,9 @@ function Battle(props) {
               }
             } else {
               // this is a combo
+              // comboCounterOpponent=comboCounterOpponent+1;
               if (opponentDamage > 0 && props.playerCharacter.health > 0) {
                 // damage greater than 0, damage was dealt
-                // const opponentMove = `${opponentCharacter.name} follows up with another attack and deals ${opponentDamage} damage`;
                 const opponentMove =DamageText(opponentCharacter.name,opponentCharacter.attack,opponentDamage);
                 totalDamageDealtToPlayer =
                   totalDamageDealtToPlayer + opponentDamage;
@@ -223,7 +219,6 @@ function Battle(props) {
                 timer = timer + increase;
               } else {
                 // damage was 0, attack blocked
-                //const opponentMove = `${opponentCharacter.name} follows up with another attack but ${props.playerCharacter.name} blocks the attack`;
                 const opponentMove = BlockText(opponentCharacter.name,props.playerCharacter.name);
                 setTimeout(() => {
                   setMoves((prevMoves) => [opponentMove, ...prevMoves]);
@@ -232,9 +227,7 @@ function Battle(props) {
               }
             }
             opponentNextHitChance =
-              opponentNextHitChance / 2 + props.playerCharacter.combo;
-
-            // opponentNextHitChance = 0;
+              (opponentNextHitChance / 2) - 5;
             followupAttack = Math.floor(Math.random() * 100);
           }
           // Update player health
@@ -252,7 +245,7 @@ function Battle(props) {
           }, timer - increase);
           if (newPlayerHealth <= 0) {
             setTimeout(() => {
-              setMoves((prevMoves) => ["Player Knocked Out!", ...prevMoves]);
+              setMoves((prevMoves) => [`${opponentCharacter.name} Wins!`, `${props.playerCharacter.name} Knocked Out!`, ...prevMoves]);
             }, timer);
             timer = timer + increase;
           }
@@ -266,18 +259,18 @@ function Battle(props) {
     <div>
       <h1>Match {props.level}</h1>
       <div>
-        <div class="battlescreen">
+        <div className="battlescreen">
           <div style={{ marginRight: "10px" }}>
             <Character character={props.playerCharacter} />
           </div>
           <div>
             <h2>Versus</h2>
-            <button class="start-attack" onClick={simulateFight}>
+            <button className="start-attack" onClick={simulateFight}>
               Attack
             </button>
             {props.playerCharacter.health <= 0 ||
             opponentCharacter.health <= 0 ? (
-              <button class="next-battle" onClick={handleNextScreen}>
+              <button className="next-battle" onClick={handleNextScreen}>
                 Continue
               </button>
             ) : null}
